@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class Execution
+public class ExecutionModel
 {
     [JsonPropertyName("item")]
-    public Item Item { get; set; }
+    public ItemModel Item { get; set; }
 
     [JsonPropertyName("id")]
     public string Id { get; set; }
     
     [JsonPropertyName("response")]
-    public Response Response { get; set; }
+    public ResponseModel Response { get; set; }
 
 }
