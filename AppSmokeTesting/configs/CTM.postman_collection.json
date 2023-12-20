@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "95c05ed3-aacc-4fe0-8dc8-366df724d755",
+		"name": "CTM",
+		"description": "ASP.NET Core 2.1 Microservice\n\nContact Support:\n Name: Medical Solutions\n Email: 900b5633.MedicalSolutions.onmicrosoft.com@amer.teams.ms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29334153"
+	},
+	"item": [
+		{
+			"name": "01.Dashboard",
+			"item": [
+				{
+					"name": "01.a.GetDashboardOnAssignment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"options\": {\n    \"statuses\": [\n      \"On Assignment\",\n      \"Assigned\",\n      \"Completed Assignment\",\n      \"Assignment Terminated\"\n    ],\n    \"hospital\": [],\n    \"hospitalRequests\": []\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/GetDashboardOnAssignment?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"GetDashboardOnAssignment"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.b.GetDashboardStaffingForecast",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"options\": {\n    \"statuses\": [\n      \"On Assignment\",\n      \"Assigned\",\n      \"Completed Assignment\",\n      \"Assignment Terminated\"\n    ],\n    \"hospital\": [],\n    \"hospitalRequests\": []\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/GetDashboardStaffingForecast?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"GetDashboardStaffingForecast"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01.c.GetDashboardHeadCount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"options\": {\n    \"statuses\": [\n      \"On Assignment\",\n      \"Assigned\",\n      \"Completed Assignment\",\n      \"Assignment Terminated\"\n    ],\n    \"hospital\": [],\n    \"hospitalRequests\": []\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/GetDashboardHeadCount?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"GetDashboardHeadCount"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02.JobPostings",
+			"item": [
+				{
+					"name": "02.Jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"options\": {\n    \"hospitalRequests\": [],\n    \"regionRequests\": [],\n    \"shiftRequests\": [],\n    \"statuses\": [\n      \"Pending Approval\",\n      \"Declined\"\n    ],\n    \"titleRequests\": [],\n    \"unitRequests\": []\n  },\n  \"pageNumber\": 1,\n  \"pageSize\": 24,\n  \"sortBy\": \"createddate\",\n  \"sortOrder\": \"desc\"\n}\n\n// {\n//   \"pageSize\": \"<integer>\",\n//   \"pageNumber\": \"<integer>\",\n//   \"sortBy\": \"<string>\",\n//   \"sortOrder\": \"<string>\",\n//   \"isExporting\": \"<boolean>\",\n//   \"setFilterCounts\": \"<boolean>\",\n//   \"options\": {\n//     \"statuses\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"state\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"city\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"title\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"hospital\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"shift\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"unit\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"shiftName\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"retentionType\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"searchName\": \"<string>\",\n//     \"accounts\": [\n//       \"<string>\",\n//       \"<string>\"\n//     ],\n//     \"nextNDays\": \"<integer>\",\n//     \"nextNDateType\": \"<string>\",\n//     \"titleRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"hospitalRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"shiftRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"unitRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"retentionTypeRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"regionRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"jobRequests\": [\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       },\n//       {\n//         \"name\": \"<string>\",\n//         \"ids\": [\n//           \"<string>\",\n//           \"<string>\"\n//         ]\n//       }\n//     ],\n//     \"filename\": \"<string>\",\n//     \"outputColumns\": [\n//       {\n//         \"column\": \"<string>\",\n//         \"alias\": \"<string>\"\n//       },\n//       {\n//         \"column\": \"<string>\",\n//         \"alias\": \"<string>\"\n//       }\n//     ]\n//   }\n// }",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/Jobs?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"Jobs"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03.Candidates",
+			"item": [
+				{
+					"name": "03.Candidates",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pageSize\": \"<integer>\",\n  \"pageNumber\": \"<integer>\",\n  \"sortBy\": \"<string>\",\n  \"sortOrder\": \"<string>\",\n  \"isExporting\": \"<boolean>\",\n  \"setFilterCounts\": \"<boolean>\",\n  \"options\": {\n    \"statuses\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"state\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"city\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"title\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"hospital\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shift\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"unit\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shiftName\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"retentionType\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"searchName\": \"<string>\",\n    \"accounts\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"nextNDays\": \"<integer>\",\n    \"nextNDateType\": \"<string>\",\n    \"titleRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"hospitalRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"shiftRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"unitRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"retentionTypeRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"regionRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"jobRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"filename\": \"<string>\",\n    \"outputColumns\": [\n      {\n        \"column\": \"<string>\",\n        \"alias\": \"<string>\"\n      },\n      {\n        \"column\": \"<string>\",\n        \"alias\": \"<string>\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/Candidates?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"Candidates"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04.Assigned",
+			"item": [
+				{
+					"name": "04.GetAssignedTravelers",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pageSize\": \"<integer>\",\n  \"pageNumber\": \"<integer>\",\n  \"sortBy\": \"<string>\",\n  \"sortOrder\": \"<string>\",\n  \"isExporting\": \"<boolean>\",\n  \"setFilterCounts\": \"<boolean>\",\n  \"options\": {\n    \"statuses\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"state\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"city\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"title\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"hospital\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shift\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"unit\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shiftName\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"retentionType\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"searchName\": \"<string>\",\n    \"accounts\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"nextNDays\": \"<integer>\",\n    \"nextNDateType\": \"<string>\",\n    \"titleRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"hospitalRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"shiftRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"unitRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"retentionTypeRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"regionRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"jobRequests\": [\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      },\n      {\n        \"name\": \"<string>\",\n        \"ids\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    ],\n    \"filename\": \"<string>\",\n    \"outputColumns\": [\n      {\n        \"column\": \"<string>\",\n        \"alias\": \"<string>\"\n      },\n      {\n        \"column\": \"<string>\",\n        \"alias\": \"<string>\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/GetAssignedTravelers?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"GetAssignedTravelers"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "05.StartStop",
+			"item": [
+				{
+					"name": "05.GetStartsAndStopsTravelers",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sortBy\": \"startdate\",\n  \"sortOrder\": \"asce\",\n  \"pageSize\": 24,\n  \"pageNumber\": 1,\n  \"options\": {\n    \"searchName\": \"\",\n    \"NextNDays\": 14,\n    \"NextNDateType\": \"Starts/Stops\",\n    \"hospital\": [],\n    \"title\": [],\n    \"shift\": [],\n    \"unit\": [],\n    \"regionRequests\": [],\n    \"retentionType\": [],\n    \"hospitalRequests\": [],\n    \"titleRequests\": [],\n    \"shiftRequests\": [],\n    \"unitRequests\": [],\n    \"retentionTypeRequests\": []\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/GetStartsAndStopsTravelers?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"GetStartsAndStopsTravelers"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email1}}",
+									"description": "Email Id of the Logged IN user"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "06.FinanceReport",
+			"item": [
+				{
+					"name": "06.FinanceReport",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountIds\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"travelerName\": \"<string>\",\n  \"months\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"facilityIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"units\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"purpose\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ClientPortalTravel/FinanceReport",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ClientPortalTravel",
+								"FinanceReport"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "07:Contacts",
+			"item": [
+				{
+					"name": "07.Contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/v2/ClientPortalTravel/Contacts?email={{email1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"ClientPortalTravel",
+								"Contacts"
+							],
+							"query": [
+								{
+									"key": "networkId",
+									"value": "{{networkid}}",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "{{email1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{oktaAccessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"eval(pm.environment.get(\"oktaAuthenticationScript\"));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://10.10.1.20:9003/ClientPortalTravel/ClientPortalTravelAPI",
+			"disabled": true
+		},
+		{
+			"key": "randomString",
+			"value": "",
+			"disabled": true
+		},
+		{
+			"key": "email1",
+			"value": "cltadmin@cptrvl.com",
+			"type": "default"
+		},
+		{
+			"key": "email2",
+			"value": "cltgeneraluser@cpt.com",
+			"type": "default"
+		},
+		{
+			"key": "email3",
+			"value": "bpaige@communityprograms.org",
+			"type": "default"
+		},
+		{
+			"key": "email4",
+			"value": "lastlogin@cpt.com",
+			"type": "default"
+		}
+	]
+}

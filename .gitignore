@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/AppSmokeTesting/.vs
+/AppSmokeTesting/obj
+/AppSmokeTesting/bin/Debug/net7.0-windows
+*.user
