@@ -5,6 +5,6 @@ namespace AppSmokeTesting.Models
     public class PostmanResponseModel
     {
         [JsonPropertyName("run")]
-        public Run Run { get; set; }
+        public RunModel Run { get; set; }
     }
 }
