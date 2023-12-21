@@ -201,7 +201,7 @@ namespace AppSmokeTesting
             cbApplication.SelectedIndex = 0;
             cbEnvironment.SelectedIndex = 0;
         }
-        
+
         private string BuildEmailBody(PostmanResponseModel postmanResponse)
         {
             StringBuilder sb = new StringBuilder();

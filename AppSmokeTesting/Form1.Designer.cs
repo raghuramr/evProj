@@ -92,6 +92,7 @@
             // 
             // cbEnvironment
             // 
+            cbEnvironment.DropDownStyle = ComboBoxStyle.DropDownList;
             cbEnvironment.FormattingEnabled = true;
             cbEnvironment.Items.AddRange(new object[] { "Dev", "QA", "UAT", "Prod", "Demo" });
             cbEnvironment.Location = new Point(89, 37);
@@ -110,6 +111,7 @@
             // 
             // cbApplication
             // 
+            cbApplication.DropDownStyle = ComboBoxStyle.DropDownList;
             cbApplication.FormattingEnabled = true;
             cbApplication.Items.AddRange(new object[] { "CTM | Ciro Talent Management", "CA | Ciro Affiliate", "CSM | Ciro Shift Management " });
             cbApplication.Location = new Point(89, 6);
