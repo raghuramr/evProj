@@ -1,38 +1,60 @@
 using AppSmokeTesting.Models;
+using Newtonsoft.Json;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace AppSmokeTesting
 {
     public partial class Form1 : Form
     {
+        AppConfigurationDataModel appConfigurationData;
+
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void btnExecute_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
             EnvironmentValidations();
+            LoadAppConfigurations();
+            appConfigurationData.AppConfigurations.ForEach(config =>
+            {
+                cbApplication.Items.Add(config.AppName);
+            });
+        }
 
+        private void cbApplication_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lblApplicationName.Text = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.ApplicationName).FirstOrDefault();
+            cbEnvironment.Items.Clear();
+            var environments = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.Environments).ToList();
+            environments.ForEach(cbEnvironment.Items.AddRange);
+        }
+
+        private void btnExecute_Click(object sender, EventArgs e)
+        {
             if (cbApplication.SelectedIndex == -1)
             {
-                UpdateResults("Please select the application, to proceed");
+                UpdateResults("Please select the application, to proceed", true);
                 return;
             }
 
             if (cbEnvironment.SelectedIndex == -1)
             {
-                UpdateResults("Please select the environment, to proceed");
+                UpdateResults("Please select the environment, to proceed", true);
                 return;
             }
 
-            var application = cbApplication.Text.Split("|")[0].Trim().ToUpper();
-            var environment = cbEnvironment.Text.ToUpper();
+            var application = cbApplication.Text;
+            var environment = cbEnvironment.Text;
+            var fileCheck = false;
 
             var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -40,15 +62,15 @@ namespace AppSmokeTesting
             string nodePath = @"C:\Program Files\nodejs\node.exe";
 
             // Specify the path to the Newman script
-            string newmanScriptPath = @"C:\Users\mkankanala\AppData\Roaming\npm\node_modules\newman\bin\newman.js";
+            string newmanScriptPath = @"C:\Users\rraichooti\AppData\Roaming\npm\node_modules\newman\bin\newman.js";
 
             // Specify the path to your Postman collection file
             string collectionPath = $"{(Path.Combine(folderPath, "configs"))}\\{application}.postman_collection.json";
-            UpdateResults($"collectionPath: {collectionPath}");
+            if (!CheckFileExistance("Postman Collection file path", collectionPath)) return;
 
             // Specify the path to the environment file 
             string environmentPath = $"{(Path.Combine(folderPath, "configs"))}\\{application}.{environment}.postman_environment.json";
-            UpdateResults($"environmentPath: {environmentPath}");
+            if (!CheckFileExistance("Postman Environment file path", environmentPath)) return;
 
             // Specify the path to the JSON file to capture results
             string outputPath = $"{(Path.Combine(folderPath, "results"))}\\{application}.{environment}.results_{DateTime.Now.ToString("yyyyMMdd-HHmm")}.json";
@@ -96,12 +118,14 @@ namespace AppSmokeTesting
                     if (exitCode == 0)
                     {
                         UpdateResults("Newman execution successful.");
+                        if (!CheckFileExistance("Postman response file path", outputPath)) return;
+
                         var postmanResponse = LoadJsonFile<PostmanResponseModel>(outputPath);
-                        UpdateResults(JsonSerializer.Serialize(postmanResponse));
+                        UpdateResults(JsonConvert.SerializeObject(postmanResponse));
 
                         var emailBody = BuildEmailBody(postmanResponse);
                         UpdateResults(emailBody);
-                        //SendEmail(emailBody);
+                        SendEmail(emailBody);
                     }
                     else
                     {
@@ -113,6 +137,23 @@ namespace AppSmokeTesting
                     UpdateResults(ex.Message);
                 }
             }
+        }
+
+        private bool CheckFileExistance(string typeOfFile, string filePathToCheck)
+        {
+            var result = true;
+
+            if (!File.Exists(filePathToCheck))
+            {
+                UpdateResults($"Unable to find the specified configuration file: {filePathToCheck}", true);
+                result = false;
+            }
+            else
+            {
+                UpdateResults($"{typeOfFile}: {filePathToCheck}");
+            }
+
+            return result;
         }
 
         private void EnvironmentValidations()
@@ -168,8 +209,21 @@ namespace AppSmokeTesting
             Console.WriteLine("Node.js installation process goes here.");
         }
 
-        private void UpdateResults(string message)
+        private void UpdateResults(string message, bool highlight = false)
         {
+            if (highlight)
+            {
+                rtbResults.SelectionStart = rtbResults.Text.Length;
+                rtbResults.SelectionLength = message.Length;
+                rtbResults.SelectionColor = Color.Red;
+            }
+            else
+            {
+                rtbResults.SelectionStart = rtbResults.Text.Length;
+                rtbResults.SelectionLength = message.Length;
+                rtbResults.SelectionColor = Color.Black;
+            }
+
             rtbResults.AppendText($"{DateTime.UtcNow} - {message}\n");
         }
 
@@ -181,7 +235,7 @@ namespace AppSmokeTesting
                 string jsonContent = File.ReadAllText(filePath);
 
                 // Deserialize the JSON into the specified type
-                T result = JsonSerializer.Deserialize<T>(jsonContent);
+                T result = JsonConvert.DeserializeObject<T>(jsonContent);
 
                 return result;
             }
@@ -192,10 +246,13 @@ namespace AppSmokeTesting
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void LoadAppConfigurations()
         {
-            cbApplication.SelectedIndex = 0;
-            cbEnvironment.SelectedIndex = 0;
+            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string appConfigurationPath = $"{(Path.Combine(folderPath, "configs"))}\\AppConfigurationData.json";
+            if (!CheckFileExistance("Application Configuration file path", appConfigurationPath)) return;
+
+            appConfigurationData = LoadJsonFile<AppConfigurationDataModel>(appConfigurationPath);
         }
 
         private string BuildEmailBody(PostmanResponseModel postmanResponse)
@@ -260,8 +317,8 @@ namespace AppSmokeTesting
 
         private void SendEmail(string emailBody)
         {
-            //string senderEmail = "rraichooti@evoketechnologies.com";
-            string recipientEmail = "rraichooti@evoketechnologies.com;mkankanala@evoketechnologies.com";
+            string recipientToList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
+            string recipientCCList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
             string subject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
             string body = emailBody;
 
@@ -274,16 +331,37 @@ namespace AppSmokeTesting
             // Set email properties
             mailItem.Subject = subject;
             mailItem.HTMLBody = body;
-            mailItem.To = recipientEmail;
+            mailItem.To = recipientToList;
+            mailItem.CC = recipientCCList;
 
-            // Send the email
-            mailItem.Send();
+            if (chkSendEMail.Checked)
+            {
+                // Send the email
+                mailItem.Send();
+            }
+            else
+            {
+                // display the email rather than sending it out
+                mailItem.Display();
+            }
 
             // Release the COM objects
             System.Runtime.InteropServices.Marshal.ReleaseComObject(mailItem);
             System.Runtime.InteropServices.Marshal.ReleaseComObject(outlookApp);
 
             UpdateResults("Email sent successfully.");
+        }
+
+        private void chkSendEMail_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkSendEMail.Checked)
+            {
+                chkSendEMail.Text = "Email will be sent directly";
+            }
+            else
+            {
+                chkSendEMail.Text = "Composed mail will be display on screen";
+            }
         }
     }
 }

@@ -32,6 +32,8 @@
             rtbResults = new RichTextBox();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
+            lblApplicationName = new Label();
+            chkSendEMail = new CheckBox();
             cbEnvironment = new ComboBox();
             lblEnvironment = new Label();
             cbApplication = new ComboBox();
@@ -77,6 +79,8 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(lblApplicationName);
+            tabPage1.Controls.Add(chkSendEMail);
             tabPage1.Controls.Add(cbEnvironment);
             tabPage1.Controls.Add(lblEnvironment);
             tabPage1.Controls.Add(btnExecute);
@@ -90,12 +94,30 @@
             tabPage1.Text = "Run";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // lblApplicationName
+            // 
+            lblApplicationName.AutoSize = true;
+            lblApplicationName.Location = new Point(89, 32);
+            lblApplicationName.Name = "lblApplicationName";
+            lblApplicationName.Size = new Size(0, 15);
+            lblApplicationName.TabIndex = 11;
+            // 
+            // chkSendEMail
+            // 
+            chkSendEMail.AutoSize = true;
+            chkSendEMail.Location = new Point(6, 223);
+            chkSendEMail.Name = "chkSendEMail";
+            chkSendEMail.Size = new Size(241, 19);
+            chkSendEMail.TabIndex = 10;
+            chkSendEMail.Text = "Composed mail will be display on screen";
+            chkSendEMail.UseVisualStyleBackColor = true;
+            chkSendEMail.CheckedChanged += chkSendEMail_CheckedChanged;
+            // 
             // cbEnvironment
             // 
             cbEnvironment.DropDownStyle = ComboBoxStyle.DropDownList;
             cbEnvironment.FormattingEnabled = true;
-            cbEnvironment.Items.AddRange(new object[] { "Dev", "QA", "UAT", "Prod", "Demo" });
-            cbEnvironment.Location = new Point(89, 37);
+            cbEnvironment.Location = new Point(89, 53);
             cbEnvironment.Name = "cbEnvironment";
             cbEnvironment.Size = new Size(186, 23);
             cbEnvironment.TabIndex = 9;
@@ -103,7 +125,7 @@
             // lblEnvironment
             // 
             lblEnvironment.AutoSize = true;
-            lblEnvironment.Location = new Point(6, 40);
+            lblEnvironment.Location = new Point(6, 56);
             lblEnvironment.Name = "lblEnvironment";
             lblEnvironment.Size = new Size(80, 15);
             lblEnvironment.TabIndex = 8;
@@ -113,11 +135,11 @@
             // 
             cbApplication.DropDownStyle = ComboBoxStyle.DropDownList;
             cbApplication.FormattingEnabled = true;
-            cbApplication.Items.AddRange(new object[] { "CTM | Ciro Talent Management", "CA | Ciro Affiliate", "CSM | Ciro Shift Management " });
             cbApplication.Location = new Point(89, 6);
             cbApplication.Name = "cbApplication";
             cbApplication.Size = new Size(186, 23);
             cbApplication.TabIndex = 7;
+            cbApplication.SelectedIndexChanged += cbApplication_SelectedIndexChanged;
             // 
             // lblApplication
             // 
@@ -189,5 +211,7 @@
         private TabPage tabPage2;
         private Label label1;
         private Label label2;
+        private CheckBox chkSendEMail;
+        private Label lblApplicationName;
     }
 }

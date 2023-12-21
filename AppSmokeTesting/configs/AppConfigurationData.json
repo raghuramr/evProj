@@ -1,0 +1,31 @@
+{
+  "AppConfigurations": [
+    {
+      "AppName": "CTM",
+      "ApplicationName": "Ciro Talent Management",
+      "Environments": [ "DEV", "QA", "UAT", "DEMO", "PROD" ],
+      "MailRecepients": {
+        "To": "rraichooti@evoketechnologies.com;",
+        "CC": "mkankanala@evoketechnologies.com;"
+      }
+    },
+    {
+      "AppName": "CA",
+      "ApplicationName": "Ciro Affiliate",
+      "Environments": [ "DEV", "Test", "UAT", "PROD" ],
+      "MailRecepients": {
+        "To": "rraichooti@evoketechnologies.com;",
+        "CC": "mkankanala@evoketechnologies.com;"
+      }
+    },
+    {
+      "AppName": "CSM",
+      "ApplicationName": "Ciro Shift Management",
+      "Environments": [ "DEV", "PROD" ],
+      "MailRecepients": {
+        "To": "rraichooti@evoketechnologies.com;",
+        "CC": "mkankanala@evoketechnologies.com;"
+      }
+    }
+  ]
+}
