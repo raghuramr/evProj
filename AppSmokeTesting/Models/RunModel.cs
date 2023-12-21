@@ -2,9 +2,9 @@
 
 namespace AppSmokeTesting.Models
 {
-    public class Run
+    public class RunModel
     {
         [JsonPropertyName("executions")]
-        public Execution[] Executions { get; set; }
+        public ExecutionModel[] Executions { get; set; }
     }
 }

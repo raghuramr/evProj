@@ -233,14 +233,14 @@ namespace AppSmokeTesting
             var counter = 1;
             foreach (var execution in postmanResponse.Run.Executions)
             {
-                var name = execution.Item.name;
-                var responseCode = execution.Response.code;
-                var responseSatus = execution.Response.status;
+                var name = execution.Item.Name;
+                var responseCode = execution.Response.Code;
+                var responseSatus = execution.Response.Status;
                 var responseString = string.Empty;
 
                 if (responseCode != 200 && responseCode != 201)
                 {
-                    byte[] byteArray = execution.Response.StreamData.data.Select(x => (byte)x).ToArray();
+                    byte[] byteArray = execution.Response.Stream.Data.Select(x => (byte)x).ToArray();
                     responseString = Encoding.ASCII.GetString(byteArray);
                 }
 
