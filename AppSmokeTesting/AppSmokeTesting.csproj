@@ -36,6 +36,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="configs\AppConfigurationData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="configs\CA.DEV.postman_environment.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
