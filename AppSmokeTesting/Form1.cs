@@ -1,14 +1,10 @@
-using System;
 using AppSmokeTesting.Models;
-using System.Collections;
 using System.Data;
 using System.Diagnostics;
-using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Windows.Forms;
-//using Outlook = Microsoft.Office.Interop.Outlook;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace AppSmokeTesting
 {
@@ -44,7 +40,7 @@ namespace AppSmokeTesting
             string nodePath = @"C:\Program Files\nodejs\node.exe";
 
             // Specify the path to the Newman script
-            string newmanScriptPath = @"C:\Users\rraichooti\AppData\Roaming\npm\node_modules\newman\bin\newman.js";
+            string newmanScriptPath = @"C:\Users\mkankanala\AppData\Roaming\npm\node_modules\newman\bin\newman.js";
 
             // Specify the path to your Postman collection file
             string collectionPath = $"{(Path.Combine(folderPath, "configs"))}\\{application}.postman_collection.json";
@@ -62,7 +58,7 @@ namespace AppSmokeTesting
             string command = $"\"{nodePath}\" \"{newmanScriptPath}\" run \"{collectionPath}\" --environment \"{environmentPath}\" --reporters json --reporter-json-export \"{outputPath}\"";
 
             // Start the process
-            ProcessStartInfo psi = new ProcessStartInfo
+            var psi = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
                 RedirectStandardOutput = true,
@@ -74,7 +70,7 @@ namespace AppSmokeTesting
 
             UpdateResults($"Execution Started...");
 
-            using (Process process = new Process { StartInfo = psi })
+            using (var process = new Process { StartInfo = psi })
             {
                 try
                 {
@@ -265,29 +261,29 @@ namespace AppSmokeTesting
         private void SendEmail(string emailBody)
         {
             //string senderEmail = "rraichooti@evoketechnologies.com";
-            //string recipientEmail = "rraichooti@evoketechnologies.com";
-            //string subject = $"{cbApplication} : [{cbEnvironment}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
-            //string body = emailBody;
+            string recipientEmail = "rraichooti@evoketechnologies.com;mkankanala@evoketechnologies.com";
+            string subject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
+            string body = emailBody;
 
-            //// Create an Outlook application instance
-            //Outlook.Application outlookApp = new Outlook.Application();
+            // Create an Outlook application instance
+            Outlook.Application outlookApp = new();
 
-            //// Create a new mail item
-            //Outlook.MailItem mailItem = (Outlook.MailItem)outlookApp.CreateItem(Outlook.OlItemType.olMailItem);
+            // Create a new mail item
+            Outlook.MailItem mailItem = outlookApp.CreateItem(Outlook.OlItemType.olMailItem);
 
-            //// Set email properties
-            //mailItem.Subject = subject;
-            //mailItem.Body = body;
-            //mailItem.To = recipientEmail;
+            // Set email properties
+            mailItem.Subject = subject;
+            mailItem.HTMLBody = body;
+            mailItem.To = recipientEmail;
 
-            //// Send the email
-            //mailItem.Send();
+            // Send the email
+            mailItem.Send();
 
-            //// Release the COM objects
-            //System.Runtime.InteropServices.Marshal.ReleaseComObject(mailItem);
-            //System.Runtime.InteropServices.Marshal.ReleaseComObject(outlookApp);
+            // Release the COM objects
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(mailItem);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(outlookApp);
 
-            //UpdateResults("Email sent successfully.");
+            UpdateResults("Email sent successfully.");
         }
     }
 }
