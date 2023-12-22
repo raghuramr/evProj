@@ -12,7 +12,7 @@
     {
       "AppName": "CA",
       "ApplicationName": "Ciro Affiliate",
-      "Environments": [ "DEV", "Test", "UAT", "PROD" ],
+      "Environments": [ "DEV", "QA", "UAT", "PROD" ],
       "MailRecepients": {
         "To": "rraichooti@evoketechnologies.com;",
         "CC": "mkankanala@evoketechnologies.com;"
@@ -27,5 +27,9 @@
         "CC": "mkankanala@evoketechnologies.com;"
       }
     }
-  ]
+  ],
+  "Signature": {
+    "Name": "",
+    "Email": ""
+  }
 }

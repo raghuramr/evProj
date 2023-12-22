@@ -51,7 +51,7 @@
             btnExecute.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnExecute.Location = new Point(6, 248);
             btnExecute.Name = "btnExecute";
-            btnExecute.Size = new Size(362, 49);
+            btnExecute.Size = new Size(372, 49);
             btnExecute.TabIndex = 0;
             btnExecute.Text = "Execute";
             btnExecute.UseVisualStyleBackColor = true;
@@ -74,7 +74,7 @@
             tabControl1.Location = new Point(2, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(382, 331);
+            tabControl1.Size = new Size(392, 331);
             tabControl1.TabIndex = 6;
             // 
             // tabPage1
@@ -89,7 +89,7 @@
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(374, 303);
+            tabPage1.Size = new Size(384, 303);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Run";
             tabPage1.UseVisualStyleBackColor = true;

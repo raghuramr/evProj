@@ -1,7 +1,10 @@
 using AppSmokeTesting.Models;
+using Microsoft.Office.Interop.Outlook;
 using Newtonsoft.Json;
+using System;
 using System.Data;
 using System.Diagnostics;
+using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -132,7 +135,7 @@ namespace AppSmokeTesting
                         UpdateResults("Newman execution failed.");
                     }
                 }
-                catch (Exception ex)
+                catch (System.Exception ex)
                 {
                     UpdateResults(ex.Message);
                 }
@@ -195,7 +198,7 @@ namespace AppSmokeTesting
                     process.WaitForExit();
                     return process.ExitCode == 0;
                 }
-                catch (Exception)
+                catch (System.Exception ex)
                 {
                     return false;
                 }
@@ -239,7 +242,7 @@ namespace AppSmokeTesting
 
                 return result;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 UpdateResults($"Error loading JSON file: {ex.Message}");
                 return default(T);
@@ -263,23 +266,15 @@ namespace AppSmokeTesting
             sb.AppendLine("<html>");
             sb.AppendLine("<head>");
             sb.AppendLine("<style>");
-            sb.AppendLine("table {");
-            sb.AppendLine("font-family: Arial, sans-serif;");
-            sb.AppendLine("border-collapse: collapse;");
-            sb.AppendLine("width: 50%;");
-            sb.AppendLine("margin-top: 20px;");
-            sb.AppendLine("}");
-            sb.AppendLine("th, td {");
-            sb.AppendLine("border: 1px solid #dddddd;");
-            sb.AppendLine("text-align: left;");
-            sb.AppendLine("padding: 8px;");
-            sb.AppendLine("}");
-            sb.AppendLine("th {");
-            sb.AppendLine("background-color: #f2f2f2;");
-            sb.AppendLine("}");
+            sb.AppendLine("body { font-family: Verdana, Geneva, Tahoma, sans-serif; }");
+            sb.AppendLine("table { border-collapse: collapse; width: 80%; margin-top: 10px; }");
+            sb.AppendLine("th, td { border: 1px solid #dddddd; text-align: left; padding: 5px; }");
+            sb.AppendLine("th { background-color: #f2f2f2; }");
             sb.AppendLine("</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
+            sb.AppendLine("<P> Hi There, Good day.. </p>");
+             sb.AppendLine($"<P> Please find the results of the somketest performed on the <b>{lblApplicationName.Text}</b> and <b>{cbEnvironment.Text}</b> environment.</P>");
             sb.AppendLine("<table>");
             sb.AppendLine("<tr>");
             sb.AppendLine("<th>S.NO</th>");
@@ -288,7 +283,7 @@ namespace AppSmokeTesting
             sb.AppendLine("</tr>");
 
             var counter = 1;
-            foreach (var execution in postmanResponse.Run.Executions)
+            foreach (var execution in postmanResponse.Run.Executions.Skip(2))
             {
                 var name = execution.Item.Name;
                 var responseCode = execution.Response.Code;
@@ -309,6 +304,8 @@ namespace AppSmokeTesting
             }
 
             sb.AppendLine("</table>");
+            sb.AppendLine("<br />");
+            sb.AppendLine("<p>Regards,<br/>MedSol Team");
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
 
