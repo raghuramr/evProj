@@ -126,9 +126,13 @@ namespace AppSmokeTesting
                         var postmanResponse = LoadJsonFile<PostmanResponseModel>(outputPath);
                         UpdateResults(JsonConvert.SerializeObject(postmanResponse));
 
-                        var emailBody = BuildEmailBody(postmanResponse);
+                        string emailBody = BuildEmailBody(postmanResponse);
                         UpdateResults(emailBody);
-                        SendEmail(emailBody);
+
+                        string emailSubject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
+                        string recipientToList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
+                        string recipientCCList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.CCList).FirstOrDefault();
+                        SendEmail(emailSubject, emailBody, recipientToList, recipientCCList);
                     }
                     else
                     {
@@ -138,6 +142,12 @@ namespace AppSmokeTesting
                 catch (System.Exception ex)
                 {
                     UpdateResults(ex.Message);
+                }
+                finally
+                {
+                    string emailSubject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
+                    string recipientToList = appConfigurationData.SupportTeam.Email;
+                    //SendEmail(emailSubject, rtbResults.Text, recipientToList, string.Empty);
                 }
             }
         }
@@ -274,7 +284,7 @@ namespace AppSmokeTesting
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
             sb.AppendLine("<P> Hi There, Good day.. </p>");
-             sb.AppendLine($"<P> Please find the results of the somketest performed on the <b>{lblApplicationName.Text}</b> and <b>{cbEnvironment.Text}</b> environment.</P>");
+            sb.AppendLine($"<P> Please find the results of the somketest performed on the <b>{lblApplicationName.Text}</b> and <b>{cbEnvironment.Text}</b> environment.</P>");
             sb.AppendLine("<table>");
             sb.AppendLine("<tr>");
             sb.AppendLine("<th>S.NO</th>");
@@ -312,42 +322,60 @@ namespace AppSmokeTesting
             return sb.ToString();
         }
 
-        private void SendEmail(string emailBody)
+        private void SendEmail(string emailSubject, string emailBody, string recipientToList, string recipientCCList)
         {
-            string recipientToList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
-            string recipientCCList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
-            string subject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
-            string body = emailBody;
+            Outlook.Application? outlookApp = new Outlook.Application();
+            Outlook.MailItem? mailItem = outlookApp.CreateItem(Outlook.OlItemType.olMailItem) as Outlook.MailItem;
 
-            // Create an Outlook application instance
-            Outlook.Application outlookApp = new();
-
-            // Create a new mail item
-            Outlook.MailItem mailItem = outlookApp.CreateItem(Outlook.OlItemType.olMailItem);
-
-            // Set email properties
-            mailItem.Subject = subject;
-            mailItem.HTMLBody = body;
-            mailItem.To = recipientToList;
-            mailItem.CC = recipientCCList;
-
-            if (chkSendEMail.Checked)
+            try
             {
-                // Send the email
-                mailItem.Send();
+                // Set email properties
+                mailItem.Subject = emailSubject;
+                mailItem.HTMLBody = emailBody;
+                mailItem.To = recipientToList;
+                if (!string.IsNullOrEmpty(recipientCCList))
+                {
+                    mailItem.CC = recipientCCList;
+                }
+
+                if (chkSendEMail.Checked)
+                {
+                    // Send the email
+                    mailItem.Send();
+                }
+                else
+                {
+                    // Display the email rather than sending it out
+                    mailItem.Display();
+                }
+
+                UpdateResults("Email sent successfully.");
             }
-            else
+            catch (System.Exception ex)
             {
-                // display the email rather than sending it out
-                mailItem.Display();
+                // Handle exceptions as needed
+                UpdateResults($"Error sending email: {ex.Message}");
             }
+            finally
+            {
+                // Release the COM objects
+                if (mailItem != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(mailItem);
+                    mailItem = null;
+                }
 
-            // Release the COM objects
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(mailItem);
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(outlookApp);
+                if (outlookApp != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(outlookApp);
+                    outlookApp = null;
+                }
 
-            UpdateResults("Email sent successfully.");
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
+
 
         private void chkSendEMail_CheckedChanged(object sender, EventArgs e)
         {
