@@ -104,6 +104,7 @@
             // 
             // chkSendEMail
             // 
+            chkSendEMail.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkSendEMail.AutoSize = true;
             chkSendEMail.Location = new Point(6, 223);
             chkSendEMail.Name = "chkSendEMail";
@@ -157,7 +158,7 @@
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(374, 303);
+            tabPage2.Size = new Size(384, 303);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Settings";
             tabPage2.UseVisualStyleBackColor = true;
