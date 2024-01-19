@@ -1,4 +1,4 @@
-﻿namespace AppSmokeTesting
+﻿namespace AppHealthCheck
 {
     partial class Form1
     {
@@ -41,6 +41,7 @@
             tabPage2 = new TabPage();
             label2 = new Label();
             label1 = new Label();
+            progressBar1 = new ProgressBar();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
@@ -79,6 +80,7 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(progressBar1);
             tabPage1.Controls.Add(lblApplicationName);
             tabPage1.Controls.Add(chkSendEMail);
             tabPage1.Controls.Add(cbEnvironment);
@@ -181,6 +183,13 @@
             label1.TabIndex = 7;
             label1.Text = "node path";
             // 
+            // progressBar1
+            // 
+            progressBar1.Location = new Point(225, 261);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new Size(143, 23);
+            progressBar1.TabIndex = 12;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -189,7 +198,7 @@
             Controls.Add(tabControl1);
             Controls.Add(rtbResults);
             Name = "Form1";
-            Text = "..:: ciro | application testing ::..";
+            Text = "..:: ciro | Application Health Check  ::..";
             Load += Form1_Load;
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
@@ -214,5 +223,6 @@
         private Label label2;
         private CheckBox chkSendEMail;
         private Label lblApplicationName;
+        private ProgressBar progressBar1;
     }
 }

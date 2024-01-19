@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AppSmokeTesting.Models
+namespace AppHealthCheck.Models
 {
     public class RunModel
     {

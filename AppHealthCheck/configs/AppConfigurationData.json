@@ -29,6 +29,7 @@
     }
   ],
   "SupportTeam": {
+    "notify":  false,
     "Name": "MedSol Support Team",
     "Email": "rraichooti@evoketechnologies.com"
   }

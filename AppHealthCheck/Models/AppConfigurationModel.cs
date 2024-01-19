@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace AppSmokeTesting.Models
+namespace AppHealthCheck.Models
 {
     internal class AppConfigurationsModel
     {

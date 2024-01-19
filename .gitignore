@@ -8,3 +8,5 @@
 /AppSmokeTesting/bin/Debug/net7.0-windows
 *.user
 /AppSmokeTesting/bin/x64/Debug/net7.0-windows
+/AppHealthCheck/obj
+/AppHealthCheck/.vs

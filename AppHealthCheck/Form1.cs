@@ -1,32 +1,35 @@
-using AppSmokeTesting.Models;
-using Microsoft.Office.Interop.Outlook;
+using AppHealthCheck.Models;
 using Newtonsoft.Json;
-using System;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Numerics;
+using System.Drawing;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-using System.Text.Json;
-using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
-namespace AppSmokeTesting
+namespace AppHealthCheck
 {
     public partial class Form1 : Form
     {
         AppConfigurationDataModel appConfigurationData;
+        private BackgroundWorker backgroundWorker;
 
         public Form1()
         {
             InitializeComponent();
+
+            //backgroundWorker = new BackgroundWorker();
+            //backgroundWorker.DoWork += BackgroundWorker_DoWork;
+            //backgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             EnvironmentValidations();
             LoadAppConfigurations();
+
             appConfigurationData.AppConfigurations.ForEach(config =>
             {
                 cbApplication.Items.Add(config.AppName);
@@ -41,7 +44,35 @@ namespace AppSmokeTesting
             environments.ForEach(cbEnvironment.Items.AddRange);
         }
 
-        private void btnExecute_Click(object sender, EventArgs e)
+        private async void btnExecute_Click(object sender, EventArgs e)
+        {
+            PrepareAndExecuteHealthCheck();
+        }
+
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // Disable the button while processing
+            btnExecute.Enabled = false;
+
+            // Show the spinner or progress bar
+            progressBar1.Visible = true;
+        }
+
+        private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // Hide the spinner or progress bar
+            progressBar1.Visible = false;
+
+            // Enable the button after processing
+            btnExecute.Enabled = true;
+
+            if (appConfigurationData.SupportTeam.Notify)
+            {
+                SendMailToSupportTeam();
+            }
+        }
+
+        private async void PrepareAndExecuteHealthCheck()
         {
             if (cbApplication.SelectedIndex == -1)
             {
@@ -68,19 +99,29 @@ namespace AppSmokeTesting
             string newmanScriptPath = @"C:\Users\rraichooti\AppData\Roaming\npm\node_modules\newman\bin\newman.js";
 
             // Specify the path to your Postman collection file
-            string collectionPath = $"{(Path.Combine(folderPath, "configs"))}\\{application}.postman_collection.json";
+            string collectionPath = $"{Path.Combine(folderPath, "configs")}\\{application}.postman_collection.json";
             if (!CheckFileExistance("Postman Collection file path", collectionPath)) return;
 
             // Specify the path to the environment file 
-            string environmentPath = $"{(Path.Combine(folderPath, "configs"))}\\{application}.{environment}.postman_environment.json";
+            string environmentPath = $"{Path.Combine(folderPath, "configs")}\\{application}.{environment}.postman_environment.json";
             if (!CheckFileExistance("Postman Environment file path", environmentPath)) return;
 
             // Specify the path to the JSON file to capture results
-            string outputPath = $"{(Path.Combine(folderPath, "results"))}\\{application}.{environment}.results_{DateTime.Now.ToString("yyyyMMdd-HHmm")}.json";
+            string outputPath = $"{Path.Combine(folderPath, "results")}\\{application}.{environment}.results_{DateTime.Now.ToString("yyyyMMdd-HHmm")}.json";
             UpdateResults($"outputPath: {outputPath}");
 
             // Build the command to run Newman with the specified reporters
-            string command = $"\"{nodePath}\" \"{newmanScriptPath}\" run \"{collectionPath}\" --environment \"{environmentPath}\" --reporters json --reporter-json-export \"{outputPath}\"";
+            string command = $"\"{nodePath}\" \"{newmanScriptPath}\" run \"{collectionPath}\"";
+
+            //string targetRequest = "04.GetAssignedTravelers";
+
+            //// Optionally, include the target request within the folder
+            //if (!string.IsNullOrEmpty(targetRequest))
+            //{
+            //    command += $" --request \"{targetRequest}\"";
+            //}
+
+            command += $" --environment \"{environmentPath}\" --reporters json --reporter-json-export \"{outputPath}\"";
 
             // Start the process
             var psi = new ProcessStartInfo
@@ -94,7 +135,46 @@ namespace AppSmokeTesting
             };
 
             UpdateResults($"Execution Started...");
+            
+            // Start the background worker
+            //backgroundWorker.RunWorkerAsync();
 
+            var results = await ExecuteHealthCheck(outputPath, psi);
+
+            UpdateResults($"Execution Completed...");
+
+            if (results.Equals("Success"))
+            {
+                UpdateResults("Newman execution successful.");
+                if (!CheckFileExistance("Postman response file path", outputPath)) return;
+
+                var postmanResponse = LoadJsonFile<PostmanResponseModel>(outputPath);
+                //UpdateResults(JsonConvert.SerializeObject(postmanResponse));
+
+                string emailBody = BuildEmailBody(postmanResponse);
+                //UpdateResults(emailBody);
+
+                string emailSubject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Health Check - {DateTime.Now.ToString("yyyy/MM/dd")}";
+                string recipientToList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
+                string recipientCCList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.CCList).FirstOrDefault();
+                SendEmail(emailSubject, emailBody, recipientToList, recipientCCList);
+            }
+            else
+            {
+                UpdateResults(results, true);
+            }
+        }
+
+        private void SendMailToSupportTeam()
+        {
+            string emailSubject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Health Check Support Update - {DateTime.Now.ToString("yyyy/MM/dd")}";
+            string recipientToList = appConfigurationData.SupportTeam.Email;
+            SendEmail(emailSubject, rtbResults.Text, recipientToList, string.Empty);
+        }
+
+        private async Task<string> ExecuteHealthCheck(string outputPath, ProcessStartInfo psi)
+        {
+            string result = string.Empty;
             using (var process = new Process { StartInfo = psi })
             {
                 try
@@ -120,36 +200,20 @@ namespace AppSmokeTesting
 
                     if (exitCode == 0)
                     {
-                        UpdateResults("Newman execution successful.");
-                        if (!CheckFileExistance("Postman response file path", outputPath)) return;
-
-                        var postmanResponse = LoadJsonFile<PostmanResponseModel>(outputPath);
-                        UpdateResults(JsonConvert.SerializeObject(postmanResponse));
-
-                        string emailBody = BuildEmailBody(postmanResponse);
-                        UpdateResults(emailBody);
-
-                        string emailSubject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
-                        string recipientToList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.ToList).FirstOrDefault();
-                        string recipientCCList = appConfigurationData.AppConfigurations.Where(x => x.AppName == cbApplication.Text).Select(x => x.MailRecepients.CCList).FirstOrDefault();
-                        SendEmail(emailSubject, emailBody, recipientToList, recipientCCList);
+                        result = "Success";
                     }
                     else
                     {
-                        UpdateResults("Newman execution failed.");
+                        result = "Newman execution failed.";
                     }
                 }
                 catch (System.Exception ex)
                 {
-                    UpdateResults(ex.Message);
-                }
-                finally
-                {
-                    string emailSubject = $"{cbApplication.Text.Split("|")[0].Trim().ToUpper()} : [{cbEnvironment.Text.ToUpper()}] | Smoke test - {DateTime.Now.ToString("yyyy/MM/dd")}";
-                    string recipientToList = appConfigurationData.SupportTeam.Email;
-                    //SendEmail(emailSubject, rtbResults.Text, recipientToList, string.Empty);
+                    result = ex.Message;
                 }
             }
+
+            return result;
         }
 
         private bool CheckFileExistance(string typeOfFile, string filePathToCheck)
@@ -262,7 +326,7 @@ namespace AppSmokeTesting
         private void LoadAppConfigurations()
         {
             var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string appConfigurationPath = $"{(Path.Combine(folderPath, "configs"))}\\AppConfigurationData.json";
+            string appConfigurationPath = $"{Path.Combine(folderPath, "configs")}\\AppConfigurationData.json";
             if (!CheckFileExistance("Application Configuration file path", appConfigurationPath)) return;
 
             appConfigurationData = LoadJsonFile<AppConfigurationDataModel>(appConfigurationPath);
@@ -279,17 +343,21 @@ namespace AppSmokeTesting
             sb.AppendLine("body { font-family: Verdana, Geneva, Tahoma, sans-serif; }");
             sb.AppendLine("table { border-collapse: collapse; width: 80%; margin-top: 10px; }");
             sb.AppendLine("th, td { border: 1px solid #dddddd; text-align: left; padding: 5px; }");
-            sb.AppendLine("th { background-color: #f2f2f2; }");
+            sb.AppendLine("th { background-color: #f2f2f2; text-align: center; }");
+            sb.AppendLine(".highlightMe { background-color: rgb(247, 186, 186); }");
+            sb.AppendLine(".centerText { text-align: center; }");
+            sb.AppendLine("span { font-size: .7em; line-height:1.2em; }");
             sb.AppendLine("</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
             sb.AppendLine("<P> Hi There, Good day.. </p>");
-            sb.AppendLine($"<P> Please find the results of the somketest performed on the <b>{lblApplicationName.Text}</b> and <b>{cbEnvironment.Text}</b> environment.</P>");
+            sb.AppendLine($"<P>Please find the results of the <b>{lblApplicationName.Text}</b> application health check which was verified on the <b>{cbEnvironment.Text}</b> environment.</P>");
             sb.AppendLine("<table>");
             sb.AppendLine("<tr>");
-            sb.AppendLine("<th>S.NO</th>");
-            sb.AppendLine("<th>Request Name</th>");
-            sb.AppendLine("<th>Status</th>");
+            sb.AppendLine("<th width='2%'>S.NO</th>");
+            sb.AppendLine("<th>Request Name With Details</th>");
+            sb.AppendLine("<th width='10%'>Status</th>");
+            sb.AppendLine("<th width='5%'>Duration</th>");
             sb.AppendLine("</tr>");
 
             var counter = 1;
@@ -297,19 +365,26 @@ namespace AppSmokeTesting
             {
                 var name = execution.Item.Name;
                 var responseCode = execution.Response.Code;
-                var responseSatus = execution.Response.Status;
+                var responseSatus = "Success";
                 var responseString = string.Empty;
+                var responeTime = 0;
+                var highlightMe = string.Empty;
 
                 if (responseCode != 200 && responseCode != 201)
                 {
+                    highlightMe = "highlightMe";
+                    responseSatus = "Failed";
                     byte[] byteArray = execution.Response.Stream.Data.Select(x => (byte)x).ToArray();
                     responseString = Encoding.ASCII.GetString(byteArray);
                 }
 
-                sb.AppendLine("<tr>");
-                sb.AppendLine($"<td>{counter++}</td>");
-                sb.AppendLine($"<td>{name}</td>");
-                sb.AppendLine($"<td>{responseCode} | {responseSatus} | {responseString} </td>");
+                responeTime = execution.Response.ResponseTime;
+
+                sb.AppendLine($"<tr class='{highlightMe}'>");
+                sb.AppendLine($"<td class='centerText'>{counter++}</td>");
+                sb.AppendLine($"<td>{name} {(string.IsNullOrEmpty(responseString) ? "" : $"<br /><span>{responseString}</span>")}</td>");
+                sb.AppendLine($"<td class='centerText'>{responseSatus}</td>");
+                sb.AppendLine($"<td class='centerText'>{responeTime} ms</td>");
                 sb.AppendLine("</tr>");
             }
 
@@ -342,14 +417,16 @@ namespace AppSmokeTesting
                 {
                     // Send the email
                     mailItem.Send();
+                    UpdateResults("Email sent successfully.");
                 }
                 else
                 {
                     // Display the email rather than sending it out
                     mailItem.Display();
+                    UpdateResults("Email articulated and displayed successfully.");
                 }
 
-                UpdateResults("Email sent successfully.");
+
             }
             catch (System.Exception ex)
             {

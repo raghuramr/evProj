@@ -1,4 +1,4 @@
-namespace AppSmokeTesting
+namespace AppHealthCheck
 {
     internal static class Program
     {

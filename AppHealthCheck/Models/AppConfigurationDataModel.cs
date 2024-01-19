@@ -1,4 +1,4 @@
-﻿namespace AppSmokeTesting.Models
+﻿namespace AppHealthCheck.Models
 {
     internal class AppConfigurationDataModel
     {
