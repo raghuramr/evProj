@@ -21,7 +21,7 @@
     {
       "AppName": "CSM",
       "ApplicationName": "Ciro Shift Management",
-      "Environments": [ "DEV", "PROD" ],
+      "Environments": [ "DEV", "QA" ],
       "MailRecepients": {
         "To": "rraichooti@evoketechnologies.com;",
         "CC": "mkankanala@evoketechnologies.com;"
