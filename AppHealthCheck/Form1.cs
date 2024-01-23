@@ -111,7 +111,7 @@ namespace AppHealthCheck
             UpdateResults($"outputPath: {outputPath}");
 
             // Build the command to run Newman with the specified reporters
-            string command = $"\"{nodePath}\" \"{newmanScriptPath}\" run \"{collectionPath}\"";
+            string command = $"\"{nodePath}\" \"{newmanScriptPath}\" run \"{collectionPath}\"  --environment \"{environmentPath}\" --reporters json --reporter-json-export \"{outputPath}\"";
 
             //string targetRequest = "04.GetAssignedTravelers";
 
@@ -121,7 +121,7 @@ namespace AppHealthCheck
             //    command += $" --request \"{targetRequest}\"";
             //}
 
-            command += $" --environment \"{environmentPath}\" --reporters json --reporter-json-export \"{outputPath}\"";
+            //command += $" --environment \"{environmentPath}\" --reporters json --reporter-json-export \"{outputPath}\"";
 
             // Start the process
             var psi = new ProcessStartInfo
