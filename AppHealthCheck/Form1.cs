@@ -373,7 +373,7 @@ namespace AppHealthCheck
                 if (responseCode != 200 && responseCode != 201)
                 {
                     highlightMe = "highlightMe";
-                    responseSatus = "Failed";
+                    responseSatus = "Failure";
                     byte[] byteArray = execution.Response.Stream.Data.Select(x => (byte)x).ToArray();
                     responseString = Encoding.ASCII.GetString(byteArray);
                 }

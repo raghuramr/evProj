@@ -55,6 +55,9 @@
     <None Update="configs\CSM.QA.postman_environment.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="configs\CTM.DEMO.postman_environment.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="configs\CTM.DEV.postman_environment.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

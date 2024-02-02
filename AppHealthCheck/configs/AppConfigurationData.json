@@ -5,7 +5,7 @@
       "ApplicationName": "Ciro Talent Management",
       "Environments": [ "DEV", "QA", "UAT", "DEMO", "PROD" ],
       "MailRecepients": {
-        "To": "rraichooti@evoketechnologies.com;",
+        "To": "rraichooti@evoketechnologies.com;rajesh.swamisetty@medicalsolutions.com;",
         "CC": "mkankanala@evoketechnologies.com;"
       }
     },
